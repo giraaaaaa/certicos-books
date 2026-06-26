@@ -6,10 +6,9 @@ export const GlobalStyle = createGlobalStyle`
   * { margin: 0; padding: 0; }
   html, body, #root { height: 100%; }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo',
-      'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    font-family: ${({ theme }) => theme.fonts.sans};
     color: ${({ theme }) => theme.colors.text.primary};
-    background: ${({ theme }) => theme.colors.background};
+    background: ${({ theme }) => theme.colors.palette.white};
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
