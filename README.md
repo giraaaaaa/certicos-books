@@ -1,4 +1,4 @@
-# CDRI Books
+# CERTICOS BOOKS
 
 카카오(다음) 책 검색 API 기반 도서 검색 SPA.
 
