@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { KeyboardEvent } from 'react';
 import styled from 'styled-components';
 import { ChevronIcon, CloseIcon } from './icons';
+import { Button } from './ui/Button';
 import type { SearchTarget } from '../types';
 
 interface DetailSearchPopupProps {
@@ -94,9 +95,9 @@ export function DetailSearchPopup({ onSubmit, onClose }: DetailSearchPopupProps)
         </InputWrap>
       </TopRow>
 
-      <SubmitButton type="button" onClick={submit}>
+      <Button variant="primary" size="sm" fullWidth onClick={submit}>
         검색하기
-      </SubmitButton>
+      </Button>
     </Popup>
   );
 }
@@ -213,17 +214,4 @@ const TermInput = styled.input`
   &::placeholder {
     color: ${({ theme }) => theme.colors.text.subtitle};
   }
-`;
-
-const SubmitButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 36px;
-  border-radius: ${({ theme }) => theme.radius.sm};
-  background: ${({ theme }) => theme.colors.palette.primary};
-  color: ${({ theme }) => theme.colors.palette.white};
-  font-size: ${({ theme }) => theme.typography.captionMedium.size};
-  font-weight: ${({ theme }) => theme.typography.captionMedium.weight};
 `;

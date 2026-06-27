@@ -1,9 +1,10 @@
 import { useState, memo } from 'react';
 import styled, { keyframes } from 'styled-components';
 import type { Book } from '../types';
-import { formatAuthors, formatPrice, getBookKey } from '../lib/format';
-import { HeartIcon, ChevronIcon } from './icons';
-import { useWishlistStore } from '../store/wishlistStore';
+import { formatAuthors, formatPrice } from '../lib/format';
+import { ChevronIcon } from './icons';
+import { Button } from './ui/Button';
+import { WishButton } from './ui/WishButton';
 
 interface BookCardProps {
   book: Book;
@@ -11,13 +12,9 @@ interface BookCardProps {
 
 // 검색 결과·찜 목록 공용 카드. 데이터 출처를 모르는 "표시 전용" 컴포넌트(Book만 받음) → 양쪽 재사용.
 // 접힘(BookListItem 960×100) ↔ 펼침(BookListItemDetail 960×344)을 상세보기 버튼으로 토글.
-// ⚠️ 찜 하트 토글은 찜 기능 단계에서 store 연결 (지금은 비찜 = 회색 외곽선).
+// 찜 토글은 WishButton이 캡슐화 → 이 카드는 wishlistStore를 직접 몰라도 됨(결합도↓).
 function BookCardComponent({ book }: BookCardProps) {
   const [expanded, setExpanded] = useState(false);
-  // 찜 여부는 '이 책'에 대한 boolean만 구독 → 다른 책 찜/해제 시 이 카드는 리렌더 안 됨(성능).
-  const key = getBookKey(book);
-  const wished = useWishlistStore((s) => s.items.some((b) => getBookKey(b) === key));
-  const toggleWish = useWishlistStore((s) => s.toggle);
   // 할인 여부: 판매가가 유효(>0)하고 정가보다 쌀 때만. (sale_price는 미제공 시 -1)
   const hasDiscount = book.sale_price > 0 && book.sale_price < book.price;
   const finalPrice = hasDiscount ? book.sale_price : book.price;
@@ -27,15 +24,7 @@ function BookCardComponent({ book }: BookCardProps) {
       <DetailCard>
         <DetailThumb>
           {book.thumbnail ? <img src={book.thumbnail} alt="" /> : <Placeholder aria-hidden />}
-          <DetailLike
-            type="button"
-            onClick={() => toggleWish(book)}
-            aria-pressed={wished}
-            aria-label={wished ? '찜 해제' : '찜하기'}
-            $wished={wished}
-          >
-            <HeartIcon size={24} filled={wished} />
-          </DetailLike>
+          <DetailLike book={book} size={24} />
         </DetailThumb>
 
         <DetailMain>
@@ -48,10 +37,10 @@ function BookCardComponent({ book }: BookCardProps) {
         </DetailMain>
 
         <DetailSide>
-          <DetailButton type="button" onClick={() => setExpanded(false)}>
+          <DetailToggle variant="secondary" onClick={() => setExpanded(false)}>
             상세보기
             <ChevronIcon direction="up" />
-          </DetailButton>
+          </DetailToggle>
           <PriceArea>
             {hasDiscount && (
               <PriceRow>
@@ -80,15 +69,7 @@ function BookCardComponent({ book }: BookCardProps) {
         ) : (
           <Placeholder aria-hidden />
         )}
-        <LikeButton
-          type="button"
-          onClick={() => toggleWish(book)}
-          aria-pressed={wished}
-          aria-label={wished ? '찜 해제' : '찜하기'}
-          $wished={wished}
-        >
-          <HeartIcon size={16} filled={wished} />
-        </LikeButton>
+        <LikeButton book={book} size={16} />
       </Thumb>
 
       <Info>
@@ -102,10 +83,10 @@ function BookCardComponent({ book }: BookCardProps) {
         <BuyButton href={book.url} target="_blank" rel="noreferrer">
           구매하기
         </BuyButton>
-        <DetailButton type="button" onClick={() => setExpanded(true)}>
+        <DetailToggle variant="secondary" onClick={() => setExpanded(true)}>
           상세보기
           <ChevronIcon direction="down" />
-        </DetailButton>
+        </DetailToggle>
       </Actions>
     </Card>
   );
@@ -123,47 +104,27 @@ const Placeholder = styled.div`
   background: ${({ theme }) => theme.colors.palette.lightGray};
 `;
 
-// 찜 = 빨강 채운 하트(#E84118), 비찜 = 흰색 외곽선(Figma Unlike). 색은 currentColor로 전달.
-const LikeButton = styled.button<{ $wished: boolean }>`
+// 찜 하트(접힘) — 표시·로직은 WishButton, 여기선 위치만(썸네일 우상단).
+const LikeButton = styled(WishButton)`
   position: absolute;
   top: 0;
   right: 0;
-  display: flex;
-  color: ${({ $wished, theme }) =>
-    $wished ? theme.colors.palette.red : theme.colors.palette.white};
 `;
 
-// 상세보기 / 구매하기 공통 버튼 골격
-const BuyButton = styled.a`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 115px;
-  height: 48px;
-  border-radius: ${({ theme }) => theme.radius.sm};
-  background: ${({ theme }) => theme.colors.palette.primary};
-  color: ${({ theme }) => theme.colors.palette.white};
-  font-size: ${({ theme }) => theme.typography.caption.size};
-  font-weight: ${({ theme }) => theme.typography.caption.weight};
+// 구매하기(접힘) — 색(primary)·크기(md)는 Button 기본값, 폭만 지정.
+// &&: 공용 Button 스타일보다 우선순위를 확실히 높여 확장 스타일이 항상 이기게 한다.
+const BuyButton = styled(Button)`
+  && {
+    width: 115px;
+  }
 `;
 
-const DetailButton = styled.button`
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-start; /* 텍스트 좌측 고정(20) */
-  gap: 5px; /* 상세보기 텍스트 ↔ 셰브론 5px (Figma 레이어 간격) */
-  white-space: nowrap; /* 콘텐츠(59+5+14)가 안쪽폭보다 약간 넓어 wrap되던 것 방지 */
-  width: 115px;
-  height: 48px;
-  padding: 0 20px;
-  border-radius: ${({ theme }) => theme.radius.sm};
-  background: ${({ theme }) => theme.colors.palette.lightGray};
-  color: ${({ theme }) => theme.colors.text.secondary};
-  font-size: ${({ theme }) => theme.typography.caption.size};
-  font-weight: ${({ theme }) => theme.typography.caption.weight};
-
-  svg {
-    color: ${({ theme }) => theme.colors.ui.gray}; /* 셰브론 = UI/Gray (텍스트는 Secondary) */
+// 상세보기(접힘·펼침 공용) — secondary 색 + 라벨 좌측정렬(padding 20) + 셰브론(gap·svg색은 Button이 처리).
+const DetailToggle = styled(Button)`
+  && {
+    width: 115px;
+    justify-content: flex-start;
+    padding: 0 20px;
   }
 `;
 
@@ -271,13 +232,11 @@ const DetailThumb = styled.div`
   }
 `;
 
-const DetailLike = styled.button<{ $wished: boolean }>`
+// 찜 하트(펼침) — WishButton 재사용, 위치만(썸네일 우상단).
+const DetailLike = styled(WishButton)`
   position: absolute;
   top: 8px;
   right: 8px;
-  display: flex;
-  color: ${({ $wished, theme }) =>
-    $wished ? theme.colors.palette.red : theme.colors.palette.white};
 `;
 
 const DetailMain = styled.div`
@@ -379,16 +338,10 @@ const FinalPrice = styled.span`
   color: ${({ theme }) => theme.colors.text.primary};
 `;
 
-const BuyButtonLarge = styled.a`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 240px;
-  height: 48px;
-  margin-top: 28px;
-  border-radius: ${({ theme }) => theme.radius.sm};
-  background: ${({ theme }) => theme.colors.palette.primary};
-  color: ${({ theme }) => theme.colors.palette.white};
-  font-size: ${({ theme }) => theme.typography.bodyMedium.size};
-  font-weight: ${({ theme }) => theme.typography.bodyMedium.weight};
+// 구매하기(펼침) — primary, 더 넓고(240) 가격 아래 여백(28).
+const BuyButtonLarge = styled(Button)`
+  && {
+    width: 240px;
+    margin-top: 28px;
+  }
 `;

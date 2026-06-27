@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import type { FormEvent } from 'react';
 import styled from 'styled-components';
 import { SearchIcon, CloseIcon } from './icons';
+import { Button } from './ui/Button';
 import { DetailSearchPopup } from './DetailSearchPopup';
 import { useSearchHistoryStore } from '../store/searchHistoryStore';
 import type { BookSearchInput, SearchTarget } from '../types';
@@ -117,9 +118,14 @@ export function SearchBar({ onSearch }: SearchBarProps) {
       </Field>
 
       <DetailWrap ref={detailRef}>
-        <DetailButton type="button" onClick={() => setDetailOpen((v) => !v)} $active={detailOpen}>
+        <DetailSearchToggle
+          variant="outline"
+          size="sm"
+          active={detailOpen}
+          onClick={() => setDetailOpen((v) => !v)}
+        >
           상세검색
-        </DetailButton>
+        </DetailSearchToggle>
         {detailOpen && (
           <DetailSearchPopup onSubmit={runDetailSearch} onClose={() => setDetailOpen(false)} />
         )}
@@ -212,16 +218,10 @@ const DetailWrap = styled.div`
   flex-shrink: 0;
 `;
 
-// 상세검색: 투명 배경 + subtitle 보더/글자, radius 8, 높이 35 (Figma). 열린 동안은 primary로 강조.
-const DetailButton = styled.button<{ $active?: boolean }>`
-  height: 35px;
-  padding: 0 ${({ theme }) => theme.spacing.md};
-  border: 1px solid
-    ${({ theme, $active }) => ($active ? theme.colors.palette.primary : theme.colors.text.subtitle)};
-  border-radius: ${({ theme }) => theme.radius.sm};
-  background: transparent;
-  color: ${({ theme, $active }) =>
-    $active ? theme.colors.palette.primary : theme.colors.text.subtitle};
-  font-size: ${({ theme }) => theme.typography.body2.size};
-  font-weight: ${({ theme }) => theme.typography.body2.weight};
+// 상세검색 토글 — outline 색·sm 크기(36)는 Button이 처리, 높이만 Figma값(35)으로 맞춤.
+// 열림(active) 시 primary 강조도 Button의 outline variant가 담당.
+const DetailSearchToggle = styled(Button)`
+  && {
+    height: 35px;
+  }
 `;

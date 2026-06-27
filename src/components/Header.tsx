@@ -61,8 +61,8 @@ const NavItem = styled(NavLink)`
   line-height: 1;
   color: ${({ theme }) => theme.colors.text.primary};
 
-  /* 활성: 텍스트 색은 그대로, primary 밑줄만(밑줄 폭 = 텍스트 폭) */
-  &.active::after {
+  /* primary 밑줄(폭 = 텍스트 폭) */
+  &::after {
     content: '';
     position: absolute;
     left: 0;
@@ -70,5 +70,31 @@ const NavItem = styled(NavLink)`
     bottom: -6px;
     height: 2px;
     background: ${({ theme }) => theme.colors.palette.primary};
+    transform: scaleX(0);
+    transform-origin: left center;
+    opacity: 0;
+    /* 사라질 때: 가로 그대로 둔 채 opacity만 페이드아웃. 폭 리셋(scaleX0)은 페이드가 끝난 뒤(0.25s)로 미뤄 안 보이게. */
+    transition:
+      opacity 0.25s ease,
+      transform 0s ease 0.25s;
+  }
+
+  /* 나타날 때(hover 미리보기 / active 현재 페이지): 좌→우로 펴지며(scaleX) 페이드인 */
+  &:hover::after,
+  &.active::after {
+    transform: scaleX(1);
+    opacity: 1;
+    transition:
+      opacity 0.25s ease,
+      transform 0.25s ease;
+  }
+
+  /* 모션 민감 사용자: 애니메이션 없이 즉시 표시/숨김 */
+  @media (prefers-reduced-motion: reduce) {
+    &::after,
+    &:hover::after,
+    &.active::after {
+      transition: none;
+    }
   }
 `;
