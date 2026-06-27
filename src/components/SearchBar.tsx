@@ -64,7 +64,16 @@ export function SearchBar({ onSearch }: SearchBarProps) {
 
   return (
     <Row onSubmit={handleSubmit}>
-      <Field>
+      <Field
+        // 포커스가 드롭다운 안(항목)으로 옮겨가면 닫지 않음 → 키보드(Tab)로 기록 항목에 도달 가능.
+        onBlur={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget)) setOpen(false);
+        }}
+        // Esc로 기록 드롭다운 닫기.
+        onKeyDown={(e) => {
+          if (e.key === 'Escape') setOpen(false);
+        }}
+      >
         <InputWrap $open={showHistory}>
           <SearchIcon size={30} />
           <Input
@@ -76,7 +85,6 @@ export function SearchBar({ onSearch }: SearchBarProps) {
             }}
             onFocus={() => setOpen(true)}
             onClick={() => setOpen(true)}
-            onBlur={() => setOpen(false)}
             placeholder="검색어를 입력하세요"
             aria-label="도서 검색"
           />

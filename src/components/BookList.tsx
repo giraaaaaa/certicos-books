@@ -27,9 +27,9 @@ export function BookList({
 
   return (
     <List>
-      {books.map((book, index) => (
-        // isbn 중복 가능성 대비 index 보강(append-only 리스트라 안전)
-        <BookCard key={`${getBookKey(book)}-${index}`} book={book} />
+      {books.map((book) => (
+        // 검색 결과는 SearchPage에서 dedupe, 찜 목록은 toggle이 중복을 막아 key가 고유하다.
+        <BookCard key={getBookKey(book)} book={book} />
       ))}
       <div ref={sentinelRef} aria-hidden />
       {isFetchingNextPage && <Spinner />}

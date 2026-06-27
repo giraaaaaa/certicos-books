@@ -5,7 +5,6 @@ interface SearchHistoryState {
   history: string[];
   add: (term: string) => void;
   remove: (term: string) => void;
-  clear: () => void;
 }
 
 const MAX_HISTORY = 8;
@@ -25,7 +24,6 @@ export const useSearchHistoryStore = create<SearchHistoryState>()(
           return { history };
         }),
       remove: (term) => set((state) => ({ history: state.history.filter((h) => h !== term) })),
-      clear: () => set({ history: [] }),
     }),
     { name: 'cdri-search-history' },
   ),

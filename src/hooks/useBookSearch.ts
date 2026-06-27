@@ -16,7 +16,8 @@ export function useBookSearch({ query, sort = 'accuracy', target }: UseBookSearc
 
   return useInfiniteQuery({
     // 검색 조건을 키에 포함 → 조건이 바뀌면 캐시가 분리되고 자동으로 다시 가져온다.
-    queryKey: ['books', { query: trimmed, sort, target }],
+    // size도 응답에 영향을 주므로 키에 포함(지금은 상수지만, 변경 시 다른 size 캐시가 섞이는 것 방지).
+    queryKey: ['books', { query: trimmed, sort, target, size: PAGE_SIZE }],
     queryFn: ({ pageParam }) =>
       searchBooks({ query: trimmed, sort, target, page: pageParam, size: PAGE_SIZE }),
     initialPageParam: 1,
