@@ -6,6 +6,7 @@ export const GlobalStyle = createGlobalStyle`
   * { margin: 0; padding: 0; }
   html, body, #root { height: 100%; }
   body {
+    min-width: 800px; /* 하이브리드 하한 — 그 아래는 가로 스크롤(데스크탑 레이아웃 보존) */
     font-family: ${({ theme }) => theme.fonts.sans};
     color: ${({ theme }) => theme.colors.text.primary};
     background: ${({ theme }) => theme.colors.palette.white};

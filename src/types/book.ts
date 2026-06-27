@@ -7,6 +7,12 @@ export type SearchSort = 'accuracy' | 'latest';
 /** 상세검색 대상 필드. person = 저자명 */
 export type SearchTarget = 'title' | 'person' | 'publisher' | 'isbn';
 
+/** 검색 실행 입력 — 일반검색(target 없음 = 통합) · 상세검색(target 지정) 공용. UI → hook 전달용. */
+export interface BookSearchInput {
+  query: string;
+  target?: SearchTarget;
+}
+
 /** 요청 쿼리 파라미터 */
 export interface SearchParams {
   query: string;

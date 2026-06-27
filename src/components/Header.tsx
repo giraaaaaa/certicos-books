@@ -1,17 +1,26 @@
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
-// 모든 페이지 공통 헤더 — 좌측 로고 + 중앙 네비. 활성 탭은 primary 색 + 밑줄.
+// 네비 항목을 한 곳에서 관리(추가/변경 용이). end: '/'는 정확히 일치할 때만 활성.
+const NAV_ITEMS = [
+  { to: '/', label: '도서 검색', end: true },
+  { to: '/wishlist', label: '내가 찜한 책', end: false },
+] as const;
+
+// 공통 헤더. Figma 실측 + 비율 기준으로 배치:
+// - 로고: 헤더 폭의 1/12(8.333%) 지점 (디자인 x:160 @1920), Title1 · text.primary
+// - 네비: 헤더 폭의 2/5(40%) 지점에서 시작 (디자인 x:768), Body1 · text.primary, 항목 간격 56
+// - 활성 탭: 텍스트 색은 유지하고 primary 밑줄만(Figma 'Active Bar', visible 토글 → 라우터 .active로 처리)
 export function Header() {
   return (
     <Bar>
       <Logo to="/">CERTICOS BOOKS</Logo>
       <Nav>
-        {/* end: '/' 는 정확히 일치할 때만 활성(하위 경로에 물들지 않게) */}
-        <NavItem to="/" end>
-          도서 검색
-        </NavItem>
-        <NavItem to="/wishlist">내가 찜한 책</NavItem>
+        {NAV_ITEMS.map(({ to, label, end }) => (
+          <NavItem key={to} to={to} end={end}>
+            {label}
+          </NavItem>
+        ))}
       </Nav>
     </Bar>
   );
@@ -19,37 +28,47 @@ export function Header() {
 
 const Bar = styled.header`
   position: relative;
-  display: flex;
-  align-items: center;
   height: 80px;
-  padding: 0 ${({ theme }) => theme.spacing.xl};
+  background: ${({ theme }) => theme.colors.palette.white};
 `;
 
+// 로고: 헤더 폭의 1/12 지점, 수직 중앙. (left %가 곧 디자인 비율)
 const Logo = styled(NavLink)`
+  position: absolute;
+  left: 8.333%; /* 1/12 — 디자인 로고 x:160 @1920 */
+  top: 50%;
+  transform: translateY(-50%);
   font-size: ${({ theme }) => theme.typography.title1.size};
   font-weight: ${({ theme }) => theme.typography.title1.weight};
-  color: ${({ theme }) => theme.colors.palette.primary};
-  letter-spacing: -0.4px;
+  line-height: ${({ theme }) => theme.typography.title1.lineHeight};
+  color: ${({ theme }) => theme.colors.text.primary};
 `;
 
-// 로고는 왼쪽 끝, 네비는 화면 정중앙에 고정한다(절대중앙 정렬).
+// 네비: 헤더 폭의 2/5 지점에서 시작, 수직 중앙.
 const Nav = styled.nav`
   position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 40%; /* 2/5 — 디자인 도서검색 시작 x:768 @1920 */
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
-  gap: ${({ theme }) => theme.spacing.xl};
+  gap: 56px; /* Figma 실측: 네비 항목 간격 */
 `;
 
 const NavItem = styled(NavLink)`
-  font-size: ${({ theme }) => theme.typography.title3.size};
-  font-weight: ${({ theme }) => theme.typography.title3.weight};
-  color: ${({ theme }) => theme.colors.text.secondary};
-  padding-bottom: ${({ theme }) => theme.spacing.xs};
-  border-bottom: 2px solid transparent;
+  position: relative;
+  font-size: ${({ theme }) => theme.typography.body1.size};
+  font-weight: ${({ theme }) => theme.typography.body1.weight};
+  line-height: 1;
+  color: ${({ theme }) => theme.colors.text.primary};
 
-  &.active {
-    color: ${({ theme }) => theme.colors.palette.primary};
-    border-bottom-color: ${({ theme }) => theme.colors.palette.primary};
+  /* 활성: 텍스트 색은 그대로, primary 밑줄만(밑줄 폭 = 텍스트 폭) */
+  &.active::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -6px;
+    height: 2px;
+    background: ${({ theme }) => theme.colors.palette.primary};
   }
 `;

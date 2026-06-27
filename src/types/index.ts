@@ -6,4 +6,5 @@ export type {
   SearchParams,
   SearchSort,
   SearchTarget,
+  BookSearchInput,
 } from './book';
