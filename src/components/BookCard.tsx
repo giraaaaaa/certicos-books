@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import styled, { keyframes } from 'styled-components';
 import type { Book } from '../types';
-import { formatAuthors, formatPrice } from '../lib/format';
+import { formatAuthors, formatPrice, getBookKey } from '../lib/format';
 import { HeartIcon, ChevronIcon } from './icons';
+import { useWishlistStore } from '../store/wishlistStore';
 
 interface BookCardProps {
   book: Book;
@@ -11,8 +12,12 @@ interface BookCardProps {
 // 검색 결과·찜 목록 공용 카드. 데이터 출처를 모르는 "표시 전용" 컴포넌트(Book만 받음) → 양쪽 재사용.
 // 접힘(BookListItem 960×100) ↔ 펼침(BookListItemDetail 960×344)을 상세보기 버튼으로 토글.
 // ⚠️ 찜 하트 토글은 찜 기능 단계에서 store 연결 (지금은 비찜 = 회색 외곽선).
-export function BookCard({ book }: BookCardProps) {
+function BookCardComponent({ book }: BookCardProps) {
   const [expanded, setExpanded] = useState(false);
+  // 찜 여부는 '이 책'에 대한 boolean만 구독 → 다른 책 찜/해제 시 이 카드는 리렌더 안 됨(성능).
+  const key = getBookKey(book);
+  const wished = useWishlistStore((s) => s.items.some((b) => getBookKey(b) === key));
+  const toggleWish = useWishlistStore((s) => s.toggle);
   // 할인 여부: 판매가가 유효(>0)하고 정가보다 쌀 때만. (sale_price는 미제공 시 -1)
   const hasDiscount = book.sale_price > 0 && book.sale_price < book.price;
   const finalPrice = hasDiscount ? book.sale_price : book.price;
@@ -22,8 +27,14 @@ export function BookCard({ book }: BookCardProps) {
       <DetailCard>
         <DetailThumb>
           {book.thumbnail ? <img src={book.thumbnail} alt="" /> : <Placeholder aria-hidden />}
-          <DetailLike type="button" aria-label="찜하기">
-            <HeartIcon size={24} />
+          <DetailLike
+            type="button"
+            onClick={() => toggleWish(book)}
+            aria-pressed={wished}
+            aria-label={wished ? '찜 해제' : '찜하기'}
+            $wished={wished}
+          >
+            <HeartIcon size={24} filled={wished} />
           </DetailLike>
         </DetailThumb>
 
@@ -65,12 +76,18 @@ export function BookCard({ book }: BookCardProps) {
     <Card>
       <Thumb>
         {book.thumbnail ? (
-          <img src={book.thumbnail} alt="" loading="lazy" />
+          <img src={book.thumbnail} alt="" loading="lazy" decoding="async" />
         ) : (
           <Placeholder aria-hidden />
         )}
-        <LikeButton type="button" aria-label="찜하기">
-          <HeartIcon size={16} />
+        <LikeButton
+          type="button"
+          onClick={() => toggleWish(book)}
+          aria-pressed={wished}
+          aria-label={wished ? '찜 해제' : '찜하기'}
+          $wished={wished}
+        >
+          <HeartIcon size={16} filled={wished} />
         </LikeButton>
       </Thumb>
 
@@ -94,6 +111,10 @@ export function BookCard({ book }: BookCardProps) {
   );
 }
 
+// React.memo: 부모(BookList) 리렌더 시 book 참조가 같으면 이 카드는 리렌더를 건너뛴다.
+// 무한스크롤로 다음 페이지가 append돼도 기존 카드들은 다시 그리지 않음(성능 최적화).
+export const BookCard = memo(BookCardComponent);
+
 /* ───────── 공용 ───────── */
 
 const Placeholder = styled.div`
@@ -102,13 +123,14 @@ const Placeholder = styled.div`
   background: ${({ theme }) => theme.colors.palette.lightGray};
 `;
 
-// 비찜 = 흰색 외곽선 하트(Figma Unlike=#FFFFFF), 찜 시 red. 토글은 찜 단계에서 store 연결.
-const LikeButton = styled.button`
+// 찜 = 빨강 채운 하트(#E84118), 비찜 = 흰색 외곽선(Figma Unlike). 색은 currentColor로 전달.
+const LikeButton = styled.button<{ $wished: boolean }>`
   position: absolute;
   top: 0;
   right: 0;
   display: flex;
-  color: ${({ theme }) => theme.colors.palette.white};
+  color: ${({ $wished, theme }) =>
+    $wished ? theme.colors.palette.red : theme.colors.palette.white};
 `;
 
 // 상세보기 / 구매하기 공통 버튼 골격
@@ -249,12 +271,13 @@ const DetailThumb = styled.div`
   }
 `;
 
-const DetailLike = styled.button`
+const DetailLike = styled.button<{ $wished: boolean }>`
   position: absolute;
   top: 8px;
   right: 8px;
   display: flex;
-  color: ${({ theme }) => theme.colors.palette.white}; /* 비찜 = 흰색(Figma Unlike), 찜 시 red */
+  color: ${({ $wished, theme }) =>
+    $wished ? theme.colors.palette.red : theme.colors.palette.white};
 `;
 
 const DetailMain = styled.div`

@@ -2,13 +2,14 @@ import styled from 'styled-components';
 
 interface ResultCountProps {
   total: number;
+  label?: string;
 }
 
-// "도서 검색 결과  총 N건" — 라벨(bodyMedium) + 합계(bodyRegular, 숫자만 primary).
-export function ResultCount({ total }: ResultCountProps) {
+// "[label]  총 N건" — 라벨(bodyMedium) + 합계(bodyRegular, 숫자만 primary). 검색/찜 목록 공용.
+export function ResultCount({ total, label = '도서 검색 결과' }: ResultCountProps) {
   return (
     <Wrap>
-      <Label>도서 검색 결과</Label>
+      <Label>{label}</Label>
       <Total>
         총 <Count>{total.toLocaleString('ko-KR')}</Count>건
       </Total>

@@ -7,15 +7,21 @@ import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 
 interface BookListProps {
   books: Book[];
-  hasNextPage: boolean;
-  isFetchingNextPage: boolean;
-  onLoadMore: () => void;
+  // 무한스크롤 관련(검색 결과용). 찜 목록처럼 페이지네이션이 없으면 생략한다.
+  hasNextPage?: boolean;
+  isFetchingNextPage?: boolean;
+  onLoadMore?: () => void;
 }
 
 // 무한스크롤: 마지막 센티넬이 뷰포트에 들어오면 다음 페이지 로드.
 // (더보기 버튼/페이지네이션으로 바꾸려면 sentinel 부분만 교체하면 됨 — 로드 방식과 표시를 분리)
-export function BookList({ books, hasNextPage, isFetchingNextPage, onLoadMore }: BookListProps) {
-  const sentinelRef = useIntersectionObserver<HTMLDivElement>(onLoadMore, {
+export function BookList({
+  books,
+  hasNextPage = false,
+  isFetchingNextPage = false,
+  onLoadMore,
+}: BookListProps) {
+  const sentinelRef = useIntersectionObserver<HTMLDivElement>(onLoadMore ?? (() => {}), {
     enabled: hasNextPage && !isFetchingNextPage,
   });
 
