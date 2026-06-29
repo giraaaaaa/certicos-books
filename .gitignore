@@ -11,8 +11,9 @@ node_modules
 dist
 dist-ssr
 *.local
+*.local.md
 
-# Environment variables — 규칙 #1: API 키는 .env에만 두고 절대 커밋하지 않는다
+# Environment variables — API 키는 .env에만 두고 커밋하지 않는다
 .env
 .env.*
 !.env.example
