@@ -29,3 +29,20 @@
 - **펼침만 애니메이션(slideDown), 접기는 보류** — 펼침은 콘텐츠가 위→아래로 드러나 자연스럽지만, 접기를 단순 역방향으로 하면 풍부한 콘텐츠(표지·텍스트)가 잘려 "쭈그러드는" 느낌이라 UX가 나빠 제외. / 추후 '콘텐츠 페이드아웃 후 높이 접기' 방식으로 재도입 검토. / —
 - **성능 최적화** — `React.memo(BookCard)`로 무한스크롤 append 시 기존 카드 리렌더 스킵 / React Query `staleTime 5분`·`refetchOnWindowFocus:false`로 불필요 호출 차단 / 표지 `loading=lazy`·`decoding=async` / 검색은 제출 기반이라 키 입력마다 호출하지 않아 별도 debounce 불필요. / —
 - **보안 — API 키 분리** — Kakao 키는 `.env`(gitignore)에만 두고 코드 하드코딩 금지, `.env.example`로 형식만 공유(규칙 #1). / — / —
+- **웹폰트 렌더 비차단 로드** — Noto Sans KR(Google Fonts) stylesheet를 `preload` + `media="print" onload="this.media='all'"`로 비차단화(`index.html`). / `<head>`의 stylesheet `<link>`가 첫 렌더를 ~3.5s 막아 라이트하우스 FCP/LCP가 4.9s까지 치솟던 것을, 폴백 폰트로 즉시 렌더 후 swap하도록 변경 → **프로덕션 Performance 66→99**(FCP 4.9s→1.4s, LCP→1.7s, TBT 10ms, CLS 0). `<noscript>` 폴백 추가. / **측정은 반드시 `npm run build && npm run preview`(프로덕션) 기준** — dev 서버는 비압축이라 점수 무의미(55~66).
+
+## 디자인 시스템 — 텍스트 스타일 가이드 문서화 누락 (디자이너 등재 요청)
+
+Figma 'Typography' 스타일가이드 프레임에는 **8종**(Title1/2/3 · Body1 · Body2 · Body2/bold · caption · small)만
+그려져 있다. 그러나 실제 디자인 **컴포넌트**(검색결과 카운트, 펼친 도서 카드 등)에는 아래 **4종이 정식 named
+텍스트 스타일로 이미 정의·적용**돼 있다 — Inspect 패널에 `Name: H3/Bold`, `Name: Tiny/Medium` 등으로 표시됨.
+즉 스타일은 실재하고 값도 Figma CSS로 1:1 확인 완료(✅). **누락된 건 정의가 아니라 가이드 프레임 문서화**다.
+→ 디자이너 요청: 신규 생성이 아니라 **이 4종을 'Typography' 가이드 프레임에 문서화 등재**.
+코드 정의는 `theme.ts > typography` (B) 그룹.
+
+| 토큰 | Figma 스타일명 | 값(size/weight/lh) · color | 쓰이는 곳 | 값 확인 |
+|---|---|---|---|---|
+| `bodyMedium` | Body/Medium | 16 / 500 / 24 · Text/Primary | "도서 검색 결과" 라벨 + "총 N건" | ✅ |
+| `captionMedium` | Caption/Medium | 14 / 500 / 22 | 펼친 카드 저자 · sm 버튼 라벨 · 상세검색 팝업 입력/옵션 | ✅ (caption 16px과 다른 별개 14px 스타일) |
+| `h3Bold` | H3/Bold | 18 / 700 / 26 · Text/Primary(#353C49) | 펼친 카드 제목·가격(원가/최종가) | ✅ |
+| `tinyMedium` | Tiny/Medium | 10 / 500 / 22 · Text/Subtitle(#8D94A0), 우측정렬 | 가격 라벨(원가/할인가) | ✅ |

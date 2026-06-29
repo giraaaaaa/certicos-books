@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { typo } from '../styles/mixins';
 import emptyBook from '../assets/empty-book.png';
 
 interface EmptyStateProps {
@@ -24,7 +25,6 @@ const Wrap = styled.div`
 `;
 
 const Message = styled.p`
-  font-size: ${({ theme }) => theme.typography.caption.size};
-  font-weight: ${({ theme }) => theme.typography.caption.weight};
+  ${typo('caption')}
   color: ${({ theme }) => theme.colors.text.secondary};
 `;

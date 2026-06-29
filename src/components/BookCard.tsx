@@ -1,5 +1,6 @@
 import { useState, memo } from 'react';
 import styled, { keyframes } from 'styled-components';
+import { typo } from '../styles/mixins';
 import type { Book } from '../types';
 import { formatAuthors, formatPrice } from '../lib/format';
 import { ChevronIcon } from './icons';
@@ -165,22 +166,20 @@ const BookTitle = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: ${({ theme }) => theme.typography.title3.size};
-  font-weight: ${({ theme }) => theme.typography.title3.weight};
+  ${typo('title3')}
   color: ${({ theme }) => theme.colors.text.primary};
 `;
 
 const Authors = styled.span`
   flex-shrink: 0;
-  font-size: ${({ theme }) => theme.typography.body2.size};
+  ${typo('body2')}
   color: ${({ theme }) => theme.colors.text.secondary};
 `;
 
 const Price = styled.span`
   flex-shrink: 0;
   margin-left: 22px; /* Figma: 제목영역(552) → 가격(574) = 22. 가격 우측끝은 right 310 고정 */
-  font-size: ${({ theme }) => theme.typography.title3.size};
-  font-weight: ${({ theme }) => theme.typography.title3.weight};
+  ${typo('title3')}
   color: ${({ theme }) => theme.colors.text.primary};
 `;
 
@@ -260,24 +259,20 @@ const DetailTitle = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap; /* Figma: 제목 1줄(26) — 길면 말줄임. 2줄 되면 책소개가 밀림 */
-  font-size: ${({ theme }) => theme.typography.h3Bold.size};
-  font-weight: ${({ theme }) => theme.typography.h3Bold.weight};
-  line-height: ${({ theme }) => theme.typography.h3Bold.lineHeight};
+  ${typo('h3Bold')}
   color: ${({ theme }) => theme.colors.text.primary};
 `;
 
 const DetailAuthor = styled.span`
   flex-shrink: 0;
-  font-size: ${({ theme }) => theme.typography.captionMedium.size};
-  font-weight: ${({ theme }) => theme.typography.captionMedium.weight};
+  ${typo('captionMedium')}
   color: ${({ theme }) => theme.colors.text.subtitle};
 `;
 
 const DescLabel = styled.h4`
   margin-bottom: 12px; /* Figma: 책소개(26) → 소개글까지 12px */
-  font-size: ${({ theme }) => theme.typography.body2Bold.size};
-  font-weight: ${({ theme }) => theme.typography.body2Bold.weight};
-  line-height: 26px; /* Figma: 책소개 14/700/26 */
+  ${typo('body2Bold')}
+  line-height: 26px; /* Figma: 책소개 14/700/26 — 토큰 lineHeight(14) 대신 26 */
   color: ${({ theme }) => theme.colors.text.primary};
 `;
 
@@ -287,9 +282,8 @@ const DescText = styled.p`
   -webkit-line-clamp: 11;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  font-size: ${({ theme }) => theme.typography.small.size};
-  font-weight: ${({ theme }) => theme.typography.small.weight};
-  line-height: 16px;
+  ${typo('small')}
+  line-height: 16px; /* Figma: 소개글 lineHeight 16 — 토큰 lineHeight(10) 대신 16 */
   color: ${({ theme }) => theme.colors.text.primary};
 `;
 
@@ -319,22 +313,19 @@ const PriceRow = styled.div`
 `;
 
 const PriceLabel = styled.span`
-  font-size: ${({ theme }) => theme.typography.tinyMedium.size};
-  font-weight: ${({ theme }) => theme.typography.tinyMedium.weight};
+  ${typo('tinyMedium')}
   color: ${({ theme }) => theme.colors.text.subtitle};
 `;
 
 const OriginalPrice = styled.span`
-  font-size: ${({ theme }) => theme.typography.h3Bold.size};
-  font-weight: 400; /* Figma 원가 weight 350 → 브라우저는 400으로 렌더 */
-  line-height: ${({ theme }) => theme.typography.h3Bold.lineHeight}; /* 26 */
+  ${typo('h3Bold')}
+  font-weight: 400; /* Figma 원가 weight 350 → 브라우저는 400으로 렌더(토큰 700 덮어씀) */
   text-decoration: line-through;
   color: ${({ theme }) => theme.colors.text.primary};
 `;
 
 const FinalPrice = styled.span`
-  font-size: ${({ theme }) => theme.typography.h3Bold.size};
-  font-weight: ${({ theme }) => theme.typography.h3Bold.weight};
+  ${typo('h3Bold')}
   color: ${({ theme }) => theme.colors.text.primary};
 `;
 

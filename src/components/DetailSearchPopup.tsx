@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { KeyboardEvent } from 'react';
 import styled from 'styled-components';
+import { typo } from '../styles/mixins';
 import { ChevronIcon, CloseIcon } from './icons';
 import { Button } from './ui/Button';
 import type { SearchTarget } from '../types';
@@ -107,7 +108,7 @@ const Popup = styled.div`
   position: absolute;
   top: calc(100% + 15px); /* Figma: 상세검색 버튼에서 15px 아래 */
   right: 0;
-  z-index: 20;
+  z-index: ${({ theme }) => theme.zIndex.popover};
   display: flex;
   flex-direction: column;
   justify-content: center; /* 내용(입력행+버튼)을 세로 중앙 → 상하 여백 36이 자동 산출(36 하드코딩 제거) */
@@ -116,7 +117,7 @@ const Popup = styled.div`
   height: 160px;
   padding: 0 ${({ theme }) => theme.spacing.lg}; /* 좌우 24만 — 상하는 중앙정렬이 처리 */
   background: ${({ theme }) => theme.colors.palette.white};
-  box-shadow: 0px 4px 14px 6px rgba(151, 151, 151, 0.15);
+  box-shadow: ${({ theme }) => theme.shadows.popover};
   border-radius: ${({ theme }) => theme.radius.sm};
 `;
 
@@ -158,8 +159,7 @@ const FilterButton = styled.button`
 `;
 
 const FilterLabel = styled.span`
-  font-size: ${({ theme }) => theme.typography.body2Bold.size};
-  font-weight: ${({ theme }) => theme.typography.body2Bold.weight};
+  ${typo('body2Bold')}
   color: ${({ theme }) => theme.colors.text.primary}; /* 선택값 = Text/Default, 굵게 */
 `;
 
@@ -168,10 +168,10 @@ const Dropdown = styled.div`
   position: absolute;
   top: calc(100% + 6px); /* Figma: 필터에서 6px 아래(붙지 않게) */
   left: 0;
-  z-index: 5;
+  z-index: ${({ theme }) => theme.zIndex.raised};
   width: 100px;
   background: ${({ theme }) => theme.colors.palette.white};
-  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: ${({ theme }) => theme.shadows.dropdown};
 `;
 
 const DropdownItem = styled.button`
@@ -182,8 +182,7 @@ const DropdownItem = styled.button`
   padding: 0 ${({ theme }) => theme.spacing.sm};
   background: transparent;
   text-align: left;
-  font-size: ${({ theme }) => theme.typography.captionMedium.size};
-  font-weight: ${({ theme }) => theme.typography.captionMedium.weight};
+  ${typo('captionMedium')}
   color: ${({ theme }) => theme.colors.text.subtitle};
 
   &:hover {
@@ -207,8 +206,7 @@ const TermInput = styled.input`
   border: none;
   background: transparent;
   outline: none;
-  font-size: ${({ theme }) => theme.typography.captionMedium.size};
-  font-weight: ${({ theme }) => theme.typography.captionMedium.weight};
+  ${typo('captionMedium')}
   color: ${({ theme }) => theme.colors.text.primary};
 
   &::placeholder {

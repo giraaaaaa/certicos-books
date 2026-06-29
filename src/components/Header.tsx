@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
+import { typo } from '../styles/mixins';
 
 // 네비 항목을 한 곳에서 관리(추가/변경 용이). end: '/'는 정확히 일치할 때만 활성.
 const NAV_ITEMS = [
@@ -38,9 +39,7 @@ const Logo = styled(NavLink)`
   left: 8.333%; /* 1/12 — 디자인 로고 x:160 @1920 */
   top: 50%;
   transform: translateY(-50%);
-  font-size: ${({ theme }) => theme.typography.title1.size};
-  font-weight: ${({ theme }) => theme.typography.title1.weight};
-  line-height: ${({ theme }) => theme.typography.title1.lineHeight};
+  ${typo('title1')}
   color: ${({ theme }) => theme.colors.text.primary};
 `;
 
@@ -56,9 +55,8 @@ const Nav = styled.nav`
 
 const NavItem = styled(NavLink)`
   position: relative;
-  font-size: ${({ theme }) => theme.typography.body1.size};
-  font-weight: ${({ theme }) => theme.typography.body1.weight};
-  line-height: 1;
+  ${typo('body1')}
+  line-height: 1; /* 밑줄 위치 정렬용 — 토큰 lineHeight 대신 1 고정 */
   color: ${({ theme }) => theme.colors.text.primary};
 
   /* primary 밑줄(폭 = 텍스트 폭) */

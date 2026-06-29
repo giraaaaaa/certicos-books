@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { typo } from '../styles/mixins';
 import { PageContainer } from '../components/Layout';
 import { ResultCount } from '../components/ResultCount';
 import { EmptyState } from '../components/EmptyState';
@@ -26,8 +27,6 @@ export default function WishlistPage() {
 
 const Title = styled.h2`
   margin-bottom: ${({ theme }) => theme.spacing.lg};
-  font-size: ${({ theme }) => theme.typography.title2.size};
-  font-weight: ${({ theme }) => theme.typography.title2.weight};
-  line-height: ${({ theme }) => theme.typography.title2.lineHeight};
+  ${typo('title2')}
   color: ${({ theme }) => theme.colors.text.title};
 `;

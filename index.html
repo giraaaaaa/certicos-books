@@ -7,10 +7,25 @@
     <title>CERTICOS BOOKS</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- 폰트 CSS를 '렌더 비차단'으로 로드: 폴백 폰트로 즉시 렌더(FCP↓) 후 Noto Sans KR로 교체(display=swap).
+         stylesheet를 그냥 <head>에 두면 첫 렌더를 ~3.5s 막아 라이트하우스 FCP/LCP가 크게 깎임. -->
     <link
+      rel="preload"
+      as="style"
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap"
-      rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap"
+      />
+    </noscript>
   </head>
   <body>
     <div id="root"></div>

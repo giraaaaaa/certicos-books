@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import type { FormEvent } from 'react';
 import styled from 'styled-components';
+import { typo } from '../styles/mixins';
 import { SearchIcon, CloseIcon } from './icons';
 import { Button } from './ui/Button';
 import { DetailSearchPopup } from './DetailSearchPopup';
@@ -165,8 +166,7 @@ const Input = styled.input`
   border: none;
   background: transparent;
   outline: none;
-  font-size: ${({ theme }) => theme.typography.caption.size};
-  font-weight: ${({ theme }) => theme.typography.caption.weight};
+  ${typo('caption')}
   color: ${({ theme }) => theme.colors.text.primary};
 
   &::placeholder {
@@ -180,7 +180,7 @@ const History = styled.ul`
   top: 100%; /* 입력창 바로 아래에 붙여 한 박스처럼 연결(간격 없음) */
   left: 0;
   right: 0;
-  z-index: 10;
+  z-index: ${({ theme }) => theme.zIndex.dropdown};
   padding-bottom: 20px;
   background: ${({ theme }) => theme.colors.palette.lightGray};
   border-radius: 0 0 24px 24px; /* 위는 입력창과 연결(각짐), 아래만 둥글게 */
@@ -201,7 +201,7 @@ const HistoryTerm = styled.button`
   text-align: left;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: ${({ theme }) => theme.typography.caption.size};
+  ${typo('caption')}
   color: ${({ theme }) => theme.colors.text.subtitle};
 `;
 

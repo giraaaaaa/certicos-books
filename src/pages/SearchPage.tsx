@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import styled from 'styled-components';
+import { typo } from '../styles/mixins';
 import { PageContainer } from '../components/Layout';
 import { SearchBar } from '../components/SearchBar';
 import { ResultCount } from '../components/ResultCount';
@@ -58,9 +59,7 @@ export default function SearchPage() {
 }
 
 const Title = styled.h2`
-  font-size: ${({ theme }) => theme.typography.title2.size};
-  font-weight: ${({ theme }) => theme.typography.title2.weight};
-  line-height: ${({ theme }) => theme.typography.title2.lineHeight};
+  ${typo('title2')}
   color: ${({ theme }) => theme.colors.text.title};
 `;
 

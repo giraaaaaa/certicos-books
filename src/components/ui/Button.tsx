@@ -1,6 +1,7 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, MouseEvent, ReactNode } from 'react';
 import styled, { css } from 'styled-components';
+import { typo } from '../../styles/mixins';
 
 // 색상 축(variant)과 크기 축(size)을 prop으로 분리 → 한 컴포넌트로 모든 버튼을 표현(재사용).
 export type ButtonVariant = 'primary' | 'secondary' | 'outline';
@@ -11,7 +12,6 @@ type StyleProps = {
   $size: ButtonSize;
   $fullWidth: boolean;
   $active: boolean;
-  $busy: boolean;
 };
 
 interface BaseButtonProps {
@@ -25,7 +25,7 @@ interface BaseButtonProps {
   active?: boolean;
   /** 중복 클릭 방지 간격(ms). 직전 클릭 후 이 시간 이내 재클릭은 무시. 0이면 비활성. */
   cooldownMs?: number;
-  onClick?: (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void | Promise<void>;
+  onClick?: (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void;
   children: ReactNode;
 }
 
@@ -46,23 +46,17 @@ export function Button({
   children,
   ...rest
 }: ButtonProps) {
-  // busy: onClick이 Promise를 반환할 때 완료까지 잠금. lastClickRef: 시간 기반 연타 차단.
-  const [busy, setBusy] = useState(false);
+  // 직전 클릭 시각 — 연타/더블클릭 방지(쿨다운) 판정용.
   const lastClickRef = useRef(0);
 
   const handleClick = (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
-    // 중복 클릭 방지: (1) 비활성, (2) 비동기 처리 중, (3) cooldown 이내 재클릭 → 모두 무시.
-    if (disabled || busy || Date.now() - lastClickRef.current < cooldownMs) {
+    // 직전 클릭 후 cooldownMs 이내 재클릭(또는 비활성)은 무시 → 중복 클릭 방지.
+    if (disabled || Date.now() - lastClickRef.current < cooldownMs) {
       e.preventDefault();
       return;
     }
     lastClickRef.current = Date.now();
-    const result = onClick?.(e);
-    // 비동기 핸들러면 끝날 때까지 잠가 중복 제출을 막는다(동기 핸들러엔 영향 없음).
-    if (result instanceof Promise) {
-      setBusy(true);
-      result.finally(() => setBusy(false));
-    }
+    onClick?.(e);
   };
 
   const styleProps: StyleProps = {
@@ -70,7 +64,6 @@ export function Button({
     $size: size,
     $fullWidth: fullWidth,
     $active: active,
-    $busy: busy,
   };
 
   // 링크(a): disabled면 href를 비우고 aria-disabled로 표시(앵커엔 disabled 속성이 없음).
@@ -81,7 +74,6 @@ export function Button({
         {...(rest as AnchorRest)}
         href={disabled ? undefined : href}
         aria-disabled={disabled || undefined}
-        aria-busy={busy || undefined}
         onClick={handleClick}
       >
         {children}
@@ -94,8 +86,7 @@ export function Button({
       type="button"
       {...styleProps}
       {...(rest as ButtonRest)}
-      disabled={disabled || busy}
-      aria-busy={busy || undefined}
+      disabled={disabled}
       onClick={handleClick}
     >
       {children}
@@ -130,14 +121,12 @@ const buttonStyles = css<StyleProps>`
       ? css`
           height: 36px;
           padding: 0 ${theme.spacing.md};
-          font-size: ${theme.typography.captionMedium.size};
-          font-weight: ${theme.typography.captionMedium.weight};
+          ${typo('captionMedium')}
         `
       : css`
           height: 48px;
           padding: 0 ${theme.spacing.lg};
-          font-size: ${theme.typography.caption.size};
-          font-weight: ${theme.typography.caption.weight};
+          ${typo('caption')}
         `}
 
   /* 색상(variant) */
@@ -161,14 +150,6 @@ const buttonStyles = css<StyleProps>`
             border-color: ${$active ? theme.colors.palette.primary : theme.colors.text.subtitle};
             color: ${$active ? theme.colors.palette.primary : theme.colors.text.subtitle};
           `}
-
-  /* 비동기 처리 중(중복 클릭 잠금) 시각 표시 */
-  ${({ $busy }) =>
-    $busy &&
-    css`
-      opacity: 0.6;
-      pointer-events: none;
-    `}
 
   &:disabled,
   &[aria-disabled='true'] {

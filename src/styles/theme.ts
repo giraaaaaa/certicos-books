@@ -27,8 +27,9 @@ export const theme = {
       gray: '#B1B8C0', // UI/Gray — 셰브론 등 UI 보조
     },
   },
-  // Figma 텍스트 스타일과 1:1 매핑(이름·값 동일). 전부 Noto Sans KR, weight 500/700.
   typography: {
+    // ───────── (A) 공식 가이드 8종 — Figma 'Typography' 스타일가이드 프레임과 1:1 ─────────
+    // 전부 Noto Sans KR, weight 500/700. 가이드에 정식 정의가 존재하는 신뢰 가능한 스타일.
     title1: { size: '24px', weight: 700, lineHeight: '24px' },
     title2: { size: '22px', weight: 700, lineHeight: '24px' },
     title3: { size: '18px', weight: 700, lineHeight: '18px' },
@@ -37,12 +38,15 @@ export const theme = {
     body2Bold: { size: '14px', weight: 700, lineHeight: '14px' },
     caption: { size: '16px', weight: 500, lineHeight: '16px' },
     small: { size: '10px', weight: 500, lineHeight: '10px' },
-    // 슬래시형(Body/*) — 검색 결과 카운트 등에서 사용. lineHeight가 24로 가이드형보다 넉넉.
-    bodyRegular: { size: '16px', weight: 400, lineHeight: '24px' }, // Body/Regular
-    bodyMedium: { size: '16px', weight: 500, lineHeight: '24px' }, // Body/Medium
-    h3Bold: { size: '18px', weight: 700, lineHeight: '26px' }, // H3/Bold — 펼친 카드 제목·가격
-    captionMedium: { size: '14px', weight: 500, lineHeight: '22px' }, // Caption/Medium — 펼친 카드 저자
-    tinyMedium: { size: '10px', weight: 500, lineHeight: '22px' }, // Tiny/Medium — 가격 라벨(원가/할인가)
+
+    // ───────── (B) 컴포넌트 파생 — Figma 정식 named 스타일이나 가이드 프레임엔 미문서화 ─────────
+    // 4종 모두 Figma 텍스트 스타일(Body/Medium·Caption/Medium·H3/Bold·Tiny/Medium)로 정의돼 컴포넌트에
+    // 적용돼 있고, 값도 Figma CSS로 1:1 확인 완료(✅). 단 'Typography' 스타일가이드 프레임엔 빠져 있어
+    // — 디자이너에게 필요한 건 '스타일 생성'이 아니라 '가이드 프레임 문서화 등재'. → 상세: DECISIONS.md.
+    bodyMedium: { size: '16px', weight: 500, lineHeight: '24px' }, //  Body/Medium ✅ — "도서 검색 결과" 라벨 + "총 N건"
+    captionMedium: { size: '14px', weight: 500, lineHeight: '22px' }, // Caption/Medium ✅ — 펼친 카드 저자·sm버튼·팝업 입력
+    h3Bold: { size: '18px', weight: 700, lineHeight: '26px' }, //      H3/Bold ✅ — 펼친 카드 제목·가격(color Text/Primary)
+    tinyMedium: { size: '10px', weight: 500, lineHeight: '22px' }, //   Tiny/Medium ✅ — 가격 라벨 원가/할인가(color Text/Subtitle, 우측정렬)
   },
   spacing: {
     xs: '4px',
@@ -56,6 +60,17 @@ export const theme = {
     sm: '8px',
     md: '16px',
     full: '9999px',
+  },
+  // 그림자 토큰 — 컴포넌트에 raw rgba를 흩뿌리지 않고 한곳에서 관리(규칙 #4).
+  shadows: {
+    popover: '0px 4px 14px 6px rgba(151, 151, 151, 0.15)', // 상세검색 팝업
+    dropdown: '0px 0px 4px rgba(0, 0, 0, 0.25)', // 셀렉트 옵션 등 작은 메뉴
+  },
+  // z-index 스케일 — 매직넘버 대신 의미별 레이어로 관리(겹침 충돌 방지).
+  zIndex: {
+    raised: 5, // 로컬 스택(예: 팝업 내부 옵션)
+    dropdown: 10, // 검색 기록 드롭다운
+    popover: 20, // 상세검색 팝업
   },
   layout: {
     maxWidth: '960px', // 콘텐츠 최대 폭(가운데 정렬)

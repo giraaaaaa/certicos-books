@@ -1,11 +1,12 @@
 import styled from 'styled-components';
+import { typo } from '../styles/mixins';
 
 interface ResultCountProps {
   total: number;
   label?: string;
 }
 
-// "[label]  총 N건" — 라벨(bodyMedium) + 합계(bodyRegular, 숫자만 primary). 검색/찜 목록 공용.
+// "[label]  총 N건" — 라벨·합계 모두 bodyMedium(16/500/24), 숫자만 primary. 검색/찜 목록 공용.
 export function ResultCount({ total, label = '도서 검색 결과' }: ResultCountProps) {
   return (
     <Wrap>
@@ -25,14 +26,12 @@ const Wrap = styled.div`
 `;
 
 const Label = styled.span`
-  font-size: ${({ theme }) => theme.typography.bodyMedium.size};
-  font-weight: ${({ theme }) => theme.typography.bodyMedium.weight};
+  ${typo('bodyMedium')}
   color: ${({ theme }) => theme.colors.text.primary};
 `;
 
 const Total = styled.span`
-  font-size: ${({ theme }) => theme.typography.bodyRegular.size};
-  font-weight: ${({ theme }) => theme.typography.bodyRegular.weight};
+  ${typo('bodyMedium')}
   color: ${({ theme }) => theme.colors.text.primary};
 `;
 
