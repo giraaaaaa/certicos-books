@@ -4,7 +4,7 @@ const spin = keyframes`
   to { transform: rotate(360deg); }
 `;
 
-// 로딩 인디케이터. 색/여백은 theme 토큰에서 가져온다(규칙 #4).
+// 로딩 인디케이터. 색/여백은 theme 토큰에서 가져온다.
 // role=status(라이브 리전) + aria-label: 순수 CSS 스피너라 스크린리더에 안 보이므로 "로딩 중"을 알린다.
 export const Spinner = styled.div.attrs({ role: 'status', 'aria-label': '로딩 중' })`
   width: 28px;

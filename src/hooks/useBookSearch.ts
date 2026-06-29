@@ -10,7 +10,7 @@ interface UseBookSearchParams {
   target?: SearchTarget;
 }
 
-// 서버 상태 전용 훅 — 검색 결과 페이지네이션을 useInfiniteQuery로 관리한다(규칙 #3).
+// 서버 상태 전용 훅 — 검색 결과 페이지네이션을 useInfiniteQuery로 관리한다.
 export function useBookSearch({ query, sort = 'accuracy', target }: UseBookSearchParams) {
   const trimmed = query.trim();
 

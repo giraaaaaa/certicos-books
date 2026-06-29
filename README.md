@@ -73,6 +73,10 @@ src/
 - React Query 캐시(`staleTime`/`gcTime`) + `refetchOnWindowFocus: false`
 - 표지 이미지 `loading="lazy"` · `decoding="async"`
 - 무한스크롤은 스크롤 이벤트가 아닌 `IntersectionObserver`
+- 웹폰트(Noto Sans KR) **렌더 비차단 로드** — 폴백 폰트로 즉시 렌더 후 swap (Lighthouse Performance 99)
+
+> 성능 점수는 **프로덕션 빌드 기준**으로 측정하세요: `npm run build && npm run preview`.
+> 개발 서버(`npm run dev`)는 비압축·미번들이라 Lighthouse 점수가 낮게 나옵니다.
 
 ## 설계 결정
 

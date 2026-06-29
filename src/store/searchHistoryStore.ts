@@ -10,7 +10,7 @@ interface SearchHistoryState {
 const MAX_HISTORY = 8;
 
 // 검색 기록 = 클라이언트 영속 상태. persist 미들웨어가 localStorage에 저장 → 브라우저 재시작 후에도 유지.
-// 서버 상태(검색 결과)는 React Query가 전담 → 여기서는 절대 안 섞음(규칙 #3).
+// 서버 상태(검색 결과)는 React Query가 전담 → 여기서는 절대 안 섞음.
 export const useSearchHistoryStore = create<SearchHistoryState>()(
   persist(
     (set) => ({

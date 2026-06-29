@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Kakao API 전용 axios 인스턴스.
 // baseURL과 'Authorization: KakaoAK' 헤더를 이 한 곳에서만 설정한다
-// → 키/호스트가 코드 전반에 흩어지지 않게 하기 위함(규칙 #2의 정신).
+// → 키/호스트가 코드 전반에 흩어지지 않게 하기 위함.
 const KAKAO_KEY = import.meta.env.VITE_KAKAO_KEY;
 
 if (!KAKAO_KEY || KAKAO_KEY === 'YOUR_KAKAO_REST_API_KEY_HERE') {

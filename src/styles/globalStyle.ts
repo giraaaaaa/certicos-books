@@ -1,6 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 
-// 전역 리셋 + 기본 타이포/배경. 값은 전부 theme 토큰에서 가져온다(규칙 #4).
+// 전역 리셋 + 기본 타이포/배경. 값은 전부 theme 토큰에서 가져온다.
 export const GlobalStyle = createGlobalStyle`
   *, *::before, *::after { box-sizing: border-box; }
   * { margin: 0; padding: 0; }

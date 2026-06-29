@@ -1,5 +1,5 @@
 // 디자인 토큰 단일 출처(Single Source of Truth).
-// 컴포넌트에서 색/폰트/여백을 하드코딩하지 않고(규칙 #4) 전부 이 토큰을 참조한다.
+// 컴포넌트에서 색/폰트/여백을 하드코딩하지 않고 전부 이 토큰을 참조한다.
 export const theme = {
   fonts: {
     // Figma 디자인 시스템 폰트. Noto Sans KR(웹폰트, index.html에서 로드) + 시스템 폴백.
@@ -61,7 +61,7 @@ export const theme = {
     md: '16px',
     full: '9999px',
   },
-  // 그림자 토큰 — 컴포넌트에 raw rgba를 흩뿌리지 않고 한곳에서 관리(규칙 #4).
+  // 그림자 토큰 — 컴포넌트에 raw rgba를 흩뿌리지 않고 한곳에서 관리.
   shadows: {
     popover: '0px 4px 14px 6px rgba(151, 151, 151, 0.15)', // 상세검색 팝업
     dropdown: '0px 0px 4px rgba(0, 0, 0, 0.25)', // 셀렉트 옵션 등 작은 메뉴
